@@ -1,0 +1,178 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+	<link rel="shortcut icon" href="https://r.mobirisesite.com/1228755/assets/images/electronicdevice1.png?rnd=1740240563997" type="image/x-icon">
+	<meta name="description" content="">
+	<title>PracticaMvcNetCoreCarritoCompra</title>
+	<link rel="stylesheet" href="https://r.mobirisesite.com/1228755/assets/web/assets/mobirise-icons2/mobirise2.css?rnd=1740240563993">
+	<link rel="stylesheet" href="https://r.mobirisesite.com/1228755/assets/web/assets/mobirise-icons/mobirise-icons.css?rnd=1740240563993">
+	<link rel="stylesheet" href="https://r.mobirisesite.com/1228755/assets/tether/tether.min.css?rnd=1740240563993">
+	<link rel="stylesheet" href="~/css/additional.css">
+	<link rel="stylesheet" href="https://r.mobirisesite.com/1228755/assets/bootstrap/css/bootstrap-grid.min.css?rnd=1740240563993">
+	<link rel="stylesheet" href="https://r.mobirisesite.com/1228755/assets/bootstrap/css/bootstrap-reboot.min.css?rnd=1740240563993">
+	<link rel="stylesheet" href="https://r.mobirisesite.com/1228755/assets/dropdown/css/style.css?rnd=1740240563993">
+	<link rel="stylesheet" href="https://r.mobirisesite.com/1228755/assets/socicon/css/styles.css?rnd=1740240563993">
+	<link rel="stylesheet" href="https://r.mobirisesite.com/1228755/assets/theme/css/style.css?rnd=1740240563993">
+	<link rel="stylesheet" href="https://r.mobirisesite.com/1228755/assets/recaptcha.css?rnd=1740240563993">
+	<link rel="preload" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+	<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap&display=swap"></noscript>
+	<link rel="stylesheet" href="~/css/estilonav.css" type="text/css">
+
+	<style>
+		.navbar-fixed-top {
+			top: auto;
+		}
+
+		#mobirisePromo.container-banner {
+			height: 11rem;
+			opacity: 1;
+			-webkit-animation: 11s linear animationHeight;
+			-moz-animation: 11s linear animationHeight;
+			-o-animation: 11s linear animationHeight;
+			animation: 11s linear animationHeight;
+			transition: all 0.5s;
+		}
+
+			#mobirisePromo.container-banner.container-banner-closing {
+				pointer-events: none;
+				height: 0;
+				opacity: 0;
+				-webkit-animation: 0.5s linear animationClosing;
+				-moz-animation: 0.5s linear animationClosing;
+				-o-animation: 0.5s linear animationClosing;
+				animation: 0.5s linear animationClosing;
+			}
+
+		#mobirisePromo .banner {
+			min-height: 11rem;
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			background: #fff;
+			padding: 10px;
+			opacity: 1;
+			-webkit-animation: 11s linear animationBanner;
+			-moz-animation: 11s linear animationBanner;
+			-o-animation: 11s linear animationBanner;
+			animation: 11s linear animationBanner;
+			z-index: 1031;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+		}
+
+			#mobirisePromo .banner p {
+				overflow: hidden;
+				display: -webkit-box;
+				-webkit-line-clamp: 4;
+				-webkit-box-orient: vertical;
+				animation: none;
+				visibility: visible;
+			}
+
+		#mobirisePromo .buy-license {
+			text-decoration: underline;
+		}
+
+		#mobirisePromo .banner .btn {
+			margin: 0.3rem 0.5rem;
+			animation: none;
+			visibility: visible;
+		}
+
+		.navbar.opened {
+			z-index: 1032;
+		}
+
+		#mobirisePromo .mbr-section-abuse-report {
+			margin-top: 0.8rem;
+			font-size: 80%;
+		}
+
+			#mobirisePromo .mbr-section-abuse-report a {
+				color: #aaa;
+			}
+	</style>
+</head>
+<body>
+	<header>
+		<section class="menu cid-sgSlEYA9q5" once="menu" id="menu-0">
+			<nav class="navbar navbar-expand beta-menu navbar-dropdown align-items-center navbar-toggleable-sm">
+				<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+					<div class="hamburger">
+						<span></span>
+						<span></span>
+						<span></span>
+						<span></span>
+					</div>
+				</button>
+				<div class="menu-logo">
+					<div class="navbar-brand">
+
+						<span class="navbar-caption-wrap"><a class="navbar-caption text-white display-5">Cubos</a></span>
+					</div>
+				</div>
+				<div class="collapse navbar-collapse" id="navbarSupportedContent">
+					<ul class="navbar-nav nav-dropdown" data-app-modern-menu="true">
+						<li class="nav-item">
+							<a class="nav-link link mbr-bold text-white display-7" asp-controller="Cubos" asp-action="Index">Cubos </a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link link mbr-bold text-white display-7" asp-controller="Cubos" asp-action="Create">Añadir cubo </a>
+						</li>
+						@* <li class="nav-item">
+							<a class="nav-link link mbr-bold text-white display-7" asp-controller="productos" asp-action="create">añadir productos </a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link link mbr-bold text-white display-7" asp-controller="proveedores" asp-action="index">proveedores </a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link link mbr-bold text-white display-7" asp-controller="usuarios" asp-action="index">usuarios </a>
+						</li>
+						<li class="nav-item">
+								<a class="nav-link link mbr-bold text-white display-7" asp-controller="detallesventas" asp-action="index">detallesventas </a>
+							</li> 
+						 <li class="nav-item">
+							<a class="nav-link link mbr-bold text-white display-7" asp-controller="alertasstocks" asp-action="index">alertasstocks </a>
+						</li> *@
+					</ul>
+					<div class="navbar-buttons mbr-section-btn">
+						<a class="btn btn-md btn-secondary display-7" asp-controller="Tiendas" asp-action="Index">Perfil tienda</a>
+					</div>
+				</div>
+			</nav>
+		</section>
+
+	</header>
+
+	<div class="container">
+		<main role="main" class="pb-3">
+			@RenderBody()
+		</main>
+	</div>
+
+	<script src="https://r.mobirisesite.com/1228755/assets/web/assets/jquery/jquery.min.js?rnd=1740240563993"></script>
+	<script src="https://r.mobirisesite.com/1228755/assets/popper/popper.min.js?rnd=1740240563993"></script>
+	<script src="https://r.mobirisesite.com/1228755/assets/tether/tether.min.js?rnd=1740240563993"></script>
+	<script src="https://r.mobirisesite.com/1228755/assets/bootstrap/js/bootstrap.min.js?rnd=1740240563993"></script>
+	<script src="https://r.mobirisesite.com/1228755/assets/smoothscroll/smooth-scroll.js?rnd=1740240563993"></script>
+	<script src="https://r.mobirisesite.com/1228755/assets/dropdown/js/nav-dropdown.js?rnd=1740240563993"></script>
+	<script src="https://r.mobirisesite.com/1228755/assets/dropdown/js/navbar-dropdown.js?rnd=1740240563993"></script>
+	<script src="https://r.mobirisesite.com/1228755/assets/touchswipe/jquery.touch-swipe.min.js?rnd=1740240563993"></script>
+	<script src="https://r.mobirisesite.com/1228755/assets/bootstrapcarouselswipe/bootstrap-carousel-swipe.js?rnd=1740240563993"></script>
+	<script src="https://r.mobirisesite.com/1228755/assets/mbr-clients-slider/mbr-clients-slider.js?rnd=1740240563993"></script>
+	<script src="https://r.mobirisesite.com/1228755/assets/mbr-testimonials-slider/mbr-testimonials-slider.js?rnd=1740240563993"></script>
+	<script src="https://r.mobirisesite.com/1228755/assets/playervimeo/vimeo_player.js?rnd=1740240563993"></script>
+	<script src="https://r.mobirisesite.com/1228755/assets/theme/js/script.js?rnd=1740240563993"></script>
+	<script src="https://r.mobirisesite.com/1228755/assets/pauseVideo/script.js?rnd=1740240563993"></script>
+	<script src="https://r.mobirisesite.com/1228755/assets/formoid.min.js?rnd=1740240563993"></script>
+	@await RenderSectionAsync("Scripts", required: false)
+	<div id="scrollToTop" class="scrollToTop mbr-arrow-up"><a style="text-align: center;"><i></i></a></div>
+</body>
+</html>

@@ -1,0 +1,57 @@
+﻿@model PracticaMvcNetCoreCarritoCompra.Models.Cubo
+
+<section class="carousel slider1 slide testimonials-slider cid-sgSoTuntoX" data-interval="false" id="slider1-7">
+	<div class="container text-center">
+		<div class="carousel slide" role="listbox" data-pause="true" data-keyboard="false" data-ride="false" data-interval="false">
+			<div class="media-container-row">
+				<div class="carousel-indicators">
+				</div>
+			</div>
+			<div class="carousel-inner">
+				<div class="carousel-item">
+					<div class="back"> </div>
+					<div class="media-container-row">
+
+						<div class="col-lg-9 col-12 image-element align-self-stretch">
+							<img src="@Url.Content("~/images/" + Model.Imagen)"
+								 onerror="this.onerror=null;this.src='https://static.vecteezy.com/system/resources/previews/005/720/408/non_2x/crossed-image-icon-picture-not-available-delete-picture-symbol-free-vector.jpg';"
+								 alt="Imagen del producto"
+								 title="@Model.Nombre">
+						</div>
+						<div class="col-lg-3 col-12">
+							<div class="card-wrap">
+								<h1 class="mbr-section-title align-center mbr-fonts-style mbr-bold display-5">@Model.Nombre</h1>
+								<h5 class="mbr-section-text align-center mbr-fonts-style mb-0 display-7">
+									<table class="table" style="border-top: 1px solid black; border-bottom: 1px solid black; font-size:large">
+										<tbody>
+
+											<tr>
+												<th>Modelo</th>
+												<td>@Model.Modelo</td>
+											</tr>
+											<tr>
+												<th>Marca</th>
+												<td>@Model.Marca</td>
+											</tr>
+											<tr>
+												<th>Precio</th>
+												<td>@Model.Precio €</td>
+											</tr>
+										</tbody>
+									</table>
+
+								</h5>
+
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+</section>
+
+<style>
+	table th {
+		width: 150px;
+	}
+</style>
