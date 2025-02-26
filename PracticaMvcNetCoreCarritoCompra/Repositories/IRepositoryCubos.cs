@@ -9,5 +9,8 @@ namespace PracticaMvcNetCoreCarritoCompra.Repositories
         Task<Cubo> FindCuboAsync(int idCubo);
 
         Task InsertCuboAsync(Cubo cubo);
+
+        Task UpdateCuboAsync(Cubo cubo);
+
     }
 }

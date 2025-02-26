@@ -28,7 +28,11 @@
 							</h6>
 							<p class="mbr-text mbr-fonts-style mt-4 mb-0 display-7">@item.Modelo</p>
 						</div>
-						<div class="mbr-section-btn item-footer"><a class="btn item-btn btn-secondary-outline display-7" asp-controller="Cubos" asp-action="Details" asp-route-idCubo="@item.IdCubo">Detalles </a></div>
+						<div class="mbr-section-btn item-footer">
+							<a class="btn item-btn btn-secondary-outline display-7" asp-controller="Cubos" asp-action="Details" asp-route-idCubo="@item.IdCubo">Detalles </a>
+							<a class="btn item-btn btn-secondary-outline ml-2 mbr-iconfont mbri-edit2 mobi-mbri" href="@Url.Action("Edit", "Cubos", new { idCubo = item.IdCubo })">
+							</a>
+							</div>
 						<br />
 					</div>
 				</div>

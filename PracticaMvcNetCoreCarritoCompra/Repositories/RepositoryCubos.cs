@@ -30,5 +30,11 @@ namespace PracticaMvcNetCoreCarritoCompra.Repositories
             this.context.cubos.Add(cubo);
             await this.context.SaveChangesAsync();
         }
+
+        public async Task UpdateCuboAsync(Cubo cubo)
+        {
+            this.context.cubos.Update(cubo);
+            await this.context.SaveChangesAsync();
+        }
     }
 }

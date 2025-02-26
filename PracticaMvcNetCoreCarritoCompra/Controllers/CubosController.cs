@@ -51,5 +51,31 @@ namespace PracticaMvcNetCoreCarritoCompra.Controllers
             await this.repo.InsertCuboAsync(cubo);
             return RedirectToAction("Index");
         }
+
+        public async Task<IActionResult> Edit(int idCubo)
+        {
+            Cubo c = await this.repo.FindCuboAsync(idCubo);
+            return View(c);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(Cubo cubo, IFormFile imagen)
+        {
+            if (imagen != null && imagen.Length > 0)
+            {
+                var fileName = Path.GetFileName(imagen.FileName);
+                var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+
+                var filePath = Path.Combine(directoryPath, fileName);
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await imagen.CopyToAsync(stream);
+                }
+                cubo.Imagen = fileName;
+            }
+
+            await this.repo.UpdateCuboAsync(cubo);
+            return RedirectToAction("Index");
+        }
     }
 }
