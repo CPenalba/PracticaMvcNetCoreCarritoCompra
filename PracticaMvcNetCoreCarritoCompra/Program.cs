@@ -8,6 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddMemoryCache();
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddHttpContextAccessor();
+
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession();

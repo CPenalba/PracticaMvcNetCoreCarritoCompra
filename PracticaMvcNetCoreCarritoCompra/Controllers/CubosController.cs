@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿﻿using Microsoft.AspNetCore.Mvc;
 using PracticaMvcNetCoreCarritoCompra.Extensions;
 using PracticaMvcNetCoreCarritoCompra.Models;
 using PracticaMvcNetCoreCarritoCompra.Repositories;
@@ -66,6 +66,33 @@ namespace PracticaMvcNetCoreCarritoCompra.Controllers
             List<Cubo> cubos = await this.repo.GetCubosSessionAsync(idsCubos);
             return View(cubos);
         }
+
+        [HttpPost]
+        public IActionResult ActualizarCantidad(int idCubo, int cantidad)
+        {
+            // Obtener la lista de cubos con sus cantidades de la sesión
+            var cubosConCantidad = HttpContext.Session.GetObject<List<CuboConCantidad>>("CUBOS_CON_CANTIDAD") ?? new List<CuboConCantidad>();
+
+            // Buscar si ya existe el cubo en la lista
+            var cuboExistente = cubosConCantidad.FirstOrDefault(c => c.IdCubo == idCubo);
+
+            if (cuboExistente != null)
+            {
+                // Si el cubo ya existe, actualizamos su cantidad
+                cuboExistente.Cantidad = cantidad;
+            }
+            else
+            {
+                // Si el cubo no existe, lo agregamos con la cantidad seleccionada
+                cubosConCantidad.Add(new CuboConCantidad { IdCubo = idCubo, Cantidad = cantidad });
+            }
+
+            // Guardar la lista actualizada en la sesión
+            HttpContext.Session.SetObject("CUBOS_CON_CANTIDAD", cubosConCantidad);
+
+            return Ok();
+        }
+
 
         public async Task<IActionResult> Details(int idCubo)
         {

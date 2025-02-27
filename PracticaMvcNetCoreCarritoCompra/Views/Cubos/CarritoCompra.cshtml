@@ -1,6 +1,9 @@
 ﻿@model List<Cubo>
+@{
+	var cubosConCantidad = HttpContextAccessor.HttpContext.Session.GetObject<List<CuboConCantidad>>("CUBOS_CON_CANTIDAD");
+}
 
-
+<script src="~/js/jquery-3.7.1.min.js"></script>
 <section class="features2 cid-sgSyF0EE4Z" id="features2-d">
 	<div class="container">
 		@if (Context.Session.GetString("IDSCUBOS") == null)
@@ -10,7 +13,7 @@
 			</h2>
 		}
 		<h1 class="mbr-section-title mbr-fonts-style mb-0 mbr-bold display-5">Carrito compra</h1>
-		<br/>
+		<br />
 
 		@if (Model != null)
 		{
@@ -23,26 +26,34 @@
 						<th>Nombre</th>
 						<th>Modelo</th>
 						<th>Marca</th>
+						<th>Cantidad</th>
 						<th>Precio</th>
 						<th>Eliminar</th>
 
 					</tr>
 				</thead>
 				<tbody>
-					@foreach (Cubo c in Model)
+					@foreach (var c in Model)
 					{
+						// Obtener la cantidad almacenada en sesión para este cubo
+					
+						var cantidad = cubosConCantidad?.FirstOrDefault(cubo => cubo.IdCubo == c.IdCubo)?.Cantidad ?? 1; // 1 como valor por defecto
+						var precioTotal = c.Precio * cantidad;
+
 						<tr>
 							<td>@c.IdCubo</td>
 							<td>@c.Nombre</td>
 							<td>@c.Modelo</td>
 							<td>@c.Marca</td>
-							<td>@c.Precio €</td>
+							<td>
+								<input type="number" class="form-control cantidad-input" value="@cantidad" min="1" max="100" />
+							</td>
+							<td id="precio-@c.IdCubo" data-precio="@c.Precio">@precioTotal €</td>
 							<td>
 								<a asp-controller="Cubos" asp-action="CarritoCompra" asp-route-idEliminar="@c.IdCubo" class="btn btn-form btn-bgr btn-info display-4">
 									Eliminar
 								</a>
 							</td>
-
 						</tr>
 					}
 				</tbody>
@@ -51,3 +62,31 @@
 
 	</div>
 </section>
+
+<script>
+    $(document).ready(function () {
+        $(".cantidad-input").on("input", function () {
+            var cantidad = $(this).val();
+            var precio = $(this).closest("tr").find("td[id^='precio-']").data("precio");
+            var precioTotal = cantidad * precio;
+            $(this).closest("tr").find("td[id^='precio-']").text(precioTotal + " €");
+
+            // Guardar la cantidad modificada en la sesión
+            var idCubo = $(this).closest("tr").find("td:first").text(); // Obtener el ID del cubo
+            var cantidadModificada = $(this).val();
+
+            // Realizar una solicitud AJAX para actualizar la cantidad en el servidor
+            $.ajax({
+                url: '/Cubos/ActualizarCantidad',
+                type: 'POST',
+                data: {
+                    idCubo: idCubo,
+                    cantidad: cantidadModificada
+                },
+                success: function (response) {
+                    console.log("Cantidad actualizada");
+                }
+            });
+        });
+    });
+</script>
