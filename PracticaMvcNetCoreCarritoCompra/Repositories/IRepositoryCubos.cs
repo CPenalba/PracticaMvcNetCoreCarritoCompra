@@ -12,5 +12,6 @@ namespace PracticaMvcNetCoreCarritoCompra.Repositories
 
         Task UpdateCuboAsync(Cubo cubo);
 
+        Task<List<Cubo>> GetCubosSessionAsync(List<int> ids);
     }
 }

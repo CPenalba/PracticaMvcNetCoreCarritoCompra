@@ -7,6 +7,6 @@ namespace PracticaMvcNetCoreCarritoCompra.Data
     {
         public CuboContext(DbContextOptions<CuboContext> options): base(options) { }
 
-        public DbSet<Cubo> cubos { get; set; }
+        public DbSet<Cubo> Cubos { get; set; }
     }
 }

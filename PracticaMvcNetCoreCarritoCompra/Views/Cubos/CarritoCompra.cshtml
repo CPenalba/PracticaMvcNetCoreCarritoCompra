@@ -1,0 +1,53 @@
+﻿@model List<Cubo>
+
+
+<section class="features2 cid-sgSyF0EE4Z" id="features2-d">
+	<div class="container">
+		@if (Context.Session.GetString("IDSCUBOS") == null)
+		{
+			<h2 style="color:red">
+				No existen cubos en Session
+			</h2>
+		}
+		<h1 class="mbr-section-title mbr-fonts-style mb-0 mbr-bold display-5">Carrito compra</h1>
+		<br/>
+
+		@if (Model != null)
+		{
+
+
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th>Id cubo</th>
+						<th>Nombre</th>
+						<th>Modelo</th>
+						<th>Marca</th>
+						<th>Precio</th>
+						<th>Eliminar</th>
+
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (Cubo c in Model)
+					{
+						<tr>
+							<td>@c.IdCubo</td>
+							<td>@c.Nombre</td>
+							<td>@c.Modelo</td>
+							<td>@c.Marca</td>
+							<td>@c.Precio €</td>
+							<td>
+								<a asp-controller="Cubos" asp-action="CarritoCompra" asp-route-idEliminar="@c.IdCubo" class="btn btn-form btn-bgr btn-info display-4">
+									Eliminar
+								</a>
+							</td>
+
+						</tr>
+					}
+				</tbody>
+			</table>
+		}
+
+	</div>
+</section>

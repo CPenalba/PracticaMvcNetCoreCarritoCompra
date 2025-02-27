@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PracticaMvcNetCoreCarritoCompra.Extensions;
 using PracticaMvcNetCoreCarritoCompra.Models;
 using PracticaMvcNetCoreCarritoCompra.Repositories;
 
@@ -12,9 +13,57 @@ namespace PracticaMvcNetCoreCarritoCompra.Controllers
         {
             this.repo = repo;
         }
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? idCubo)
         {
+            if (idCubo != null)
+            {
+                List<int> idsCubos;
+                if (HttpContext.Session.GetObject<List<int>>("IDSCUBOS") == null)
+                {
+                    idsCubos = new List<int>();
+                }
+                else
+                {
+                    idsCubos = HttpContext.Session.GetObject<List<int>>("IDSCUBOS");
+
+                }
+                idsCubos.Add(idCubo.Value);
+                HttpContext.Session.SetObject("IDSCUBOS", idsCubos);
+                ViewData["MENSAJE"] = "Cubos almacenados: " + idsCubos.Count;
+            }
             List<Cubo> cubos = await this.repo.GetCubosAsync();
+            return View(cubos);
+        }
+
+        public async Task<IActionResult> CarritoCompra(int? idCubo, int? idEliminar)
+        {
+            List<int> idsCubos = HttpContext.Session.GetObject<List<int>>("IDSCUBOS") ?? new List<int>();
+
+            if (idCubo != null)
+            {
+                if (!idsCubos.Contains(idCubo.Value))
+                {
+                    idsCubos.Add(idCubo.Value);
+                }
+            }
+
+            if (idEliminar != null)
+            {
+                idsCubos.Remove(idEliminar.Value);
+                if (idsCubos.Count == 0)
+                {
+                    HttpContext.Session.Remove("IDSCUBOS");
+                }
+                else
+                {
+                    HttpContext.Session.SetObject("IDSCUBOS", idsCubos);
+                }
+            }
+            else
+            {
+                HttpContext.Session.SetObject("IDSCUBOS", idsCubos);
+            }
+            List<Cubo> cubos = await this.repo.GetCubosSessionAsync(idsCubos);
             return View(cubos);
         }
 
@@ -77,5 +126,6 @@ namespace PracticaMvcNetCoreCarritoCompra.Controllers
             await this.repo.UpdateCuboAsync(cubo);
             return RedirectToAction("Index");
         }
+
     }
 }
