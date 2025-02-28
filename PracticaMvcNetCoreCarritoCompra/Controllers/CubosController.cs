@@ -1,20 +1,42 @@
-﻿﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using PracticaMvcNetCoreCarritoCompra.Extensions;
 using PracticaMvcNetCoreCarritoCompra.Models;
 using PracticaMvcNetCoreCarritoCompra.Repositories;
+using System.Security.Policy;
 
 namespace PracticaMvcNetCoreCarritoCompra.Controllers
 {
     public class CubosController : Controller
     {
         private IRepositoryCubos repo;
+        private IMemoryCache memoryCache;
 
-        public CubosController(IRepositoryCubos repo)
+        public CubosController(IRepositoryCubos repo, IMemoryCache memoryCache)
         {
             this.repo = repo;
+            this.memoryCache = memoryCache;
         }
-        public async Task<IActionResult> Index(int? idCubo)
+        public async Task<IActionResult> Index(int? idCubo, int? idfavorito)
         {
+
+            if (idfavorito != null)
+            {
+                List<Cubo> cubosFavoritos;
+                if (this.memoryCache.Get("FAVORITOS") == null)
+                {
+                    cubosFavoritos = new List<Cubo>();
+
+                }
+                else
+                {
+                    cubosFavoritos = this.memoryCache.Get<List<Cubo>>("FAVORITOS");
+                }
+                Cubo c = await this.repo.FindCuboAsync(idfavorito.Value);
+                cubosFavoritos.Add(c);
+                this.memoryCache.Set("FAVORITOS", cubosFavoritos);
+            }
+
             if (idCubo != null)
             {
                 List<int> idsCubos;
@@ -35,63 +57,78 @@ namespace PracticaMvcNetCoreCarritoCompra.Controllers
             return View(cubos);
         }
 
-        public async Task<IActionResult> CarritoCompra(int? idCubo, int? idEliminar)
+        public async Task<IActionResult> CarritoCompra(int? idEliminar)
         {
-            List<int> idsCubos = HttpContext.Session.GetObject<List<int>>("IDSCUBOS") ?? new List<int>();
+            List<int> idsCubos = HttpContext.Session.GetObject<List<int>>("IDSCUBOS");
 
-            if (idCubo != null)
+            if (idsCubos == null)
             {
-                if (!idsCubos.Contains(idCubo.Value))
-                {
-                    idsCubos.Add(idCubo.Value);
-                }
+                ViewData["MENSAJE"] = "No existen cubos almacenados en Session.";
+                return View();
             }
-
-            if (idEliminar != null)
+            else
             {
-                idsCubos.Remove(idEliminar.Value);
-                if (idsCubos.Count == 0)
+                if (idEliminar != null)
                 {
-                    HttpContext.Session.Remove("IDSCUBOS");
+                    idsCubos.Remove(idEliminar.Value);
+                    if (idsCubos.Count == 0)
+                    {
+                        HttpContext.Session.Remove("IDSCUBOS");
+                    }
+                    else
+                    {
+                        HttpContext.Session.SetObject("IDSCUBOS", idsCubos);
+                    }
+                }
+                List<Cubo> cubos = await this.repo.GetCubosSessionAsync(idsCubos);
+                return View(cubos);
+            }
+        }
+
+        public IActionResult CubosFavoritos(int? ideliminar)
+        {
+            if (ideliminar != null)
+            {
+                List<Cubo> favoritos = this.memoryCache.Get<List<Cubo>>("FAVORITOS");
+                Cubo cDelete = favoritos.Find(z => z.IdCubo == ideliminar.Value);
+                favoritos.Remove(cDelete);
+                if (favoritos.Count == 0)
+                {
+                    this.memoryCache.Remove("FAVORITOS");
                 }
                 else
                 {
-                    HttpContext.Session.SetObject("IDSCUBOS", idsCubos);
+                    this.memoryCache.Set("FAVORITOS", favoritos);
                 }
             }
-            else
-            {
-                HttpContext.Session.SetObject("IDSCUBOS", idsCubos);
-            }
-            List<Cubo> cubos = await this.repo.GetCubosSessionAsync(idsCubos);
-            return View(cubos);
+            return View();
         }
 
-        [HttpPost]
-        public IActionResult ActualizarCantidad(int idCubo, int cantidad)
-        {
-            // Obtener la lista de cubos con sus cantidades de la sesión
-            var cubosConCantidad = HttpContext.Session.GetObject<List<CuboConCantidad>>("CUBOS_CON_CANTIDAD") ?? new List<CuboConCantidad>();
+        //[HttpPost]
+        //public IActionResult ActualizarCantidad(int idCubo, int cantidad)
+        //{
+        //    // Obtener la lista de cubos con sus cantidades de la sesión
+        //    var cubosConCantidad = HttpContext.Session.GetObject<List<CuboConCantidad>>("CUBOS_CON_CANTIDAD") ?? new List<CuboConCantidad>();
 
-            // Buscar si ya existe el cubo en la lista
-            var cuboExistente = cubosConCantidad.FirstOrDefault(c => c.IdCubo == idCubo);
+        //    // Buscar si ya existe el cubo en la lista
+        //    var cuboExistente = cubosConCantidad.FirstOrDefault(c => c.IdCubo == idCubo);
 
-            if (cuboExistente != null)
-            {
-                // Si el cubo ya existe, actualizamos su cantidad
-                cuboExistente.Cantidad = cantidad;
-            }
-            else
-            {
-                // Si el cubo no existe, lo agregamos con la cantidad seleccionada
-                cubosConCantidad.Add(new CuboConCantidad { IdCubo = idCubo, Cantidad = cantidad });
-            }
+        //    if (cuboExistente != null)
+        //    {
+        //        // Si el cubo ya existe, actualizamos su cantidad
+        //        cuboExistente.Cantidad = cantidad;
+        //    }
+        //    else
+        //    {
+        //        // Si el cubo no existe, lo agregamos con la cantidad seleccionada
+        //        cubosConCantidad.Add(new CuboConCantidad { IdCubo = idCubo, Cantidad = cantidad });
+        //    }
 
-            // Guardar la lista actualizada en la sesión
-            HttpContext.Session.SetObject("CUBOS_CON_CANTIDAD", cubosConCantidad);
+        //    // Guardar la lista actualizada en la sesión
+        //    HttpContext.Session.SetObject("CUBOS_CON_CANTIDAD", cubosConCantidad);
 
-            return Ok();
-        }
+        //    return Ok();
+        //}
 
 
         public async Task<IActionResult> Details(int idCubo)

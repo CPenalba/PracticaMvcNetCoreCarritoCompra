@@ -1,0 +1,61 @@
+﻿@{
+	List<Cubo> favoritos = memoryCache.Get<List<Cubo>>("FAVORITOS");
+}
+
+<script src="~/js/jquery-3.7.1.min.js"></script>
+<section class="features2 cid-sgSyF0EE4Z" id="features2-d">
+	<div class="container">
+		<h1 class="mbr-section-title mbr-fonts-style mb-0 mbr-bold display-5">Favoritos</h1>
+		@if (favoritos == null)
+		{
+			<h2 style="color:red">
+				No hay favoritos
+			</h2>
+		}
+		else
+		{
+			<h1 class="mbr-section-title mbr-fonts-style mb-0 mbr-bold display-5">Cubos favoritos</h1>
+			<br />
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th>Imagen</th>
+						<th>Id cubo</th>
+						<th>Nombre</th>
+						<th>Modelo</th>
+						<th>Marca</th>
+						<th>Precio</th>
+						<th>Eliminar</th>
+
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (Cubo c in favoritos)
+					{
+
+
+						<tr>
+							<td>
+								<img src="@Url.Content("~/images/" + c.Imagen)"
+									 onerror="this.onerror=null;this.src='https://static.vecteezy.com/system/resources/previews/005/720/408/non_2x/crossed-image-icon-picture-not-available-delete-picture-symbol-free-vector.jpg';"
+									 alt="Imagen del producto"
+									 title="@c.Nombre" style="width:150px; height:150px;">
+							</td>
+							<td>@c.IdCubo</td>
+							<td>@c.Nombre</td>
+							<td>@c.Modelo</td>
+							<td>@c.Marca</td>
+							<td>@c.Precio €</td>
+							<td>
+								<a asp-controller="Cubos" asp-action="CubosFavoritos" asp-route-ideliminar="@c.IdCubo" class="btn btn-form btn-bgr btn-info display-4">
+									Eliminar
+								</a>
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+
+		}
+	</div>
+</section>

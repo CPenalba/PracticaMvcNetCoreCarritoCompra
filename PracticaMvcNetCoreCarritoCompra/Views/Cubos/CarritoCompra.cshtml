@@ -6,13 +6,13 @@
 <script src="~/js/jquery-3.7.1.min.js"></script>
 <section class="features2 cid-sgSyF0EE4Z" id="features2-d">
 	<div class="container">
+		<h1 class="mbr-section-title mbr-fonts-style mb-0 mbr-bold display-5">Carrito compra</h1>
 		@if (Context.Session.GetString("IDSCUBOS") == null)
 		{
 			<h2 style="color:red">
-				No existen cubos en Session
+				No hay cubos en el carrito
 			</h2>
 		}
-		<h1 class="mbr-section-title mbr-fonts-style mb-0 mbr-bold display-5">Carrito compra</h1>
 		<br />
 
 		@if (Model != null)
@@ -22,6 +22,7 @@
 			<table class="table table-bordered">
 				<thead>
 					<tr>
+						<th>Imagen</th>
 						<th>Id cubo</th>
 						<th>Nombre</th>
 						<th>Modelo</th>
@@ -36,11 +37,17 @@
 					@foreach (var c in Model)
 					{
 						// Obtener la cantidad almacenada en sesión para este cubo
-					
+
 						var cantidad = cubosConCantidad?.FirstOrDefault(cubo => cubo.IdCubo == c.IdCubo)?.Cantidad ?? 1; // 1 como valor por defecto
 						var precioTotal = c.Precio * cantidad;
 
 						<tr>
+							<td>
+								<img src="@Url.Content("~/images/" + c.Imagen)"
+									 onerror="this.onerror=null;this.src='https://static.vecteezy.com/system/resources/previews/005/720/408/non_2x/crossed-image-icon-picture-not-available-delete-picture-symbol-free-vector.jpg';"
+									 alt="Imagen del producto"
+									 title="@c.Nombre" style="width:150px; height:150px;">
+							</td>
 							<td>@c.IdCubo</td>
 							<td>@c.Nombre</td>
 							<td>@c.Modelo</td>
@@ -64,29 +71,29 @@
 </section>
 
 <script>
-    $(document).ready(function () {
-        $(".cantidad-input").on("input", function () {
-            var cantidad = $(this).val();
-            var precio = $(this).closest("tr").find("td[id^='precio-']").data("precio");
-            var precioTotal = cantidad * precio;
-            $(this).closest("tr").find("td[id^='precio-']").text(precioTotal + " €");
+	$(document).ready(function () {
+		$(".cantidad-input").on("input", function () {
+			var cantidad = $(this).val();
+			var precio = $(this).closest("tr").find("td[id^='precio-']").data("precio");
+			var precioTotal = cantidad * precio;
+			$(this).closest("tr").find("td[id^='precio-']").text(precioTotal + " €");
 
-            // Guardar la cantidad modificada en la sesión
-            var idCubo = $(this).closest("tr").find("td:first").text(); // Obtener el ID del cubo
-            var cantidadModificada = $(this).val();
+			// Guardar la cantidad modificada en la sesión
+			var idCubo = $(this).closest("tr").find("td:first").text(); // Obtener el ID del cubo
+			var cantidadModificada = $(this).val();
 
-            // Realizar una solicitud AJAX para actualizar la cantidad en el servidor
-            $.ajax({
-                url: '/Cubos/ActualizarCantidad',
-                type: 'POST',
-                data: {
-                    idCubo: idCubo,
-                    cantidad: cantidadModificada
-                },
-                success: function (response) {
-                    console.log("Cantidad actualizada");
-                }
-            });
-        });
-    });
+			// Realizar una solicitud AJAX para actualizar la cantidad en el servidor
+			$.ajax({
+				url: '/Cubos/ActualizarCantidad',
+				type: 'POST',
+				data: {
+					idCubo: idCubo,
+					cantidad: cantidadModificada
+				},
+				success: function (response) {
+					console.log("Cantidad actualizada");
+				}
+			});
+		});
+	});
 </script>
