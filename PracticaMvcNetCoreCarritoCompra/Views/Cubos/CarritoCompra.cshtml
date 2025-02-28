@@ -42,7 +42,12 @@
 							<td>@c.Modelo</td>
 							<td>@c.Marca</td>
 							<td>
-								<input type="number" class="form-control" min="1" max="100" value="1" />
+								<form method="post" asp-controller="Cubos" asp-action="CambiarCantidad">
+									<input type="hidden" name="idCubo" value="@c.IdCubo" />
+									<input type="number" name="cantidad" class="form-control" min="1" max="100"
+										   value="@(ViewData[$"CANTIDAD_{c.IdCubo}"] ?? 1)"
+										   onchange="this.form.submit();" />
+								</form>
 							</td>
 							<td>@c.Precio €</td>
 							<td>
