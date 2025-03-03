@@ -10,13 +10,16 @@ namespace PracticaMvcNetCoreCarritoCompra.Controllers
     public class CubosController : Controller
     {
         private IRepositoryCubos repo;
+        private IRepositoryCompras repoCompras;
         private IMemoryCache memoryCache;
 
-        public CubosController(IRepositoryCubos repo, IMemoryCache memoryCache)
+        public CubosController(IRepositoryCubos repo, IRepositoryCompras repoCompras, IMemoryCache memoryCache)
         {
             this.repo = repo;
+            this.repoCompras = repoCompras;
             this.memoryCache = memoryCache;
         }
+
         public async Task<IActionResult> Index(int? idCubo, int? idfavorito)
         {
             if (idfavorito != null)
@@ -98,7 +101,7 @@ namespace PracticaMvcNetCoreCarritoCompra.Controllers
             {
                 foreach (var cubo in cubos)
                 {
-                    int cantidad = 1; 
+                    int cantidad = 1;
 
                     if (cantidades != null)
                     {
@@ -108,18 +111,13 @@ namespace PracticaMvcNetCoreCarritoCompra.Controllers
                             cantidad = cuboCantidad.Cantidad;
                         }
                     }
-
                     ViewData[$"CANTIDAD_{cubo.IdCubo}"] = cantidad;
-                    precioTotal += cubo.Precio * cantidad; 
+                    precioTotal += cubo.Precio * cantidad;
                 }
             }
-
-            ViewData["PRECIO_TOTAL"] = precioTotal; 
-
+            ViewData["PRECIO_TOTAL"] = precioTotal;
             return View(cubos);
         }
-
-
 
         public async Task<IActionResult> CambiarCantidad(int idCubo, int cantidad)
         {
@@ -136,7 +134,7 @@ namespace PracticaMvcNetCoreCarritoCompra.Controllers
             CuboCantidad cuboCantidad = cantidades.Find(x => x.IdCubo == idCubo);
             if (cuboCantidad != null)
             {
-                cuboCantidad.Cantidad = cantidad; 
+                cuboCantidad.Cantidad = cantidad;
             }
             else
             {
@@ -164,6 +162,61 @@ namespace PracticaMvcNetCoreCarritoCompra.Controllers
                 }
             }
             return View();
+        }
+
+        public async Task<IActionResult> CompraFinalizada()
+        {
+            List<int> idsCubos = HttpContext.Session.GetObject<List<int>>("IDSCUBOS");
+            List<CuboCantidad> cantidades = HttpContext.Session.GetObject<List<CuboCantidad>>("CANTIDADES");
+
+            if (idsCubos == null || !idsCubos.Any())
+            {
+                ViewData["MENSAJE"] = "No existen cubos en el carrito.";
+                return View(new List<CompraFinalizadaView>());
+            }
+
+            List<Cubo> cubos = await this.repo.GetCubosSessionAsync(idsCubos);
+            List<CompraFinalizadaView> compraDetalles = new List<CompraFinalizadaView>();
+            int precioFinal = 0;
+
+            foreach (var cubo in cubos)
+            {
+                int cantidad = 1;
+                if (cantidades != null)
+                {
+                    CuboCantidad cuboCantidad = cantidades.Find(x => x.IdCubo == cubo.IdCubo);
+                    if (cuboCantidad != null)
+                    {
+                        cantidad = cuboCantidad.Cantidad;
+                    }
+                }
+
+                CompraFinalizadaView detalle = new CompraFinalizadaView
+                {
+                    NombreCubo = cubo.Nombre,
+                    PrecioUnitario = cubo.Precio,
+                    Cantidad = cantidad,
+                    PrecioTotal = cubo.Precio * cantidad,
+                    FechaPedido = DateTime.Now
+                };
+
+                compraDetalles.Add(detalle);
+                precioFinal += detalle.PrecioTotal;
+            }
+
+            List<Compra> compras = compraDetalles.Select(d => new Compra
+            {
+                IdCubo = cubos.First(c => c.Nombre == d.NombreCubo).IdCubo,
+                Cantidad = d.Cantidad,
+                Precio = d.PrecioUnitario,
+                FechaPedido = d.FechaPedido
+            }).ToList();
+
+            await this.repoCompras.InsertarComprasAsync(compras);
+            HttpContext.Session.Remove("IDSCUBOS");
+            HttpContext.Session.Remove("CANTIDADES");
+            ViewData["PRECIO_FINAL"] = precioFinal;
+            return View(compraDetalles);
         }
 
         public async Task<IActionResult> Details(int idCubo)

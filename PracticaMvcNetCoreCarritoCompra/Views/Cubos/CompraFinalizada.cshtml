@@ -1,0 +1,47 @@
+﻿@model IEnumerable<PracticaMvcNetCoreCarritoCompra.Models.CompraFinalizadaView>
+
+<section class="features2 cid-sgSyF0EE4Z" id="features2-d">
+	<div class="container">
+		<h1 class="mbr-section-title mbr-fonts-style mb-0 mbr-bold display-5">Compra finalizada</h1>
+		<hr />
+
+		@if (Model == null || !Model.Any())
+		{
+			<h2 style="color:red">
+				No hay productos en el carrito
+			</h2>
+		}
+		else
+		{
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th>Nombre del cubo</th>
+						<th>Precio unitario</th>
+						<th>Cantidad</th>
+						<th>Precio total</th>
+						<th>Fecha de pedido</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var compra in Model)
+					{
+						<tr>
+							<td>@compra.NombreCubo</td>
+							<td>@compra.PrecioUnitario €</td>
+							<td>@compra.Cantidad</td>
+							<td>@compra.PrecioTotal €</td>
+							<td>@compra.FechaPedido.ToString("dd/MM/yyyy HH:mm:ss")</td>
+						</tr>
+					}
+					<tr>
+						<td colspan="6" class="text-right">
+							<strong>Precio final:</strong>
+							<strong>@ViewData["PRECIO_FINAL"] €</strong>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		}
+	</div>
+</section>

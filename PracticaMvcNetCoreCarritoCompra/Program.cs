@@ -13,6 +13,8 @@ builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession();
 
 builder.Services.AddTransient<IRepositoryCubos, RepositoryCubos>();
+builder.Services.AddTransient<IRepositoryCompras, RepositoryCompras>();
+
 string connectionString = builder.Configuration.GetConnectionString("MySqlCubos");
 builder.Services.AddDbContext<CuboContext>(options => options.UseMySQL(connectionString));
 
