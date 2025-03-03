@@ -3,15 +3,20 @@
 <section class="features2 cid-sgSyF0EE4Z" id="features2-d">
 	<div class="container">
 		<h1 class="mbr-section-title mbr-fonts-style mb-0 mbr-bold display-5">Carrito compra</h1>
+		<hr />
+		<div class="d-flex mb-3">
+			<a asp-controller="Cubos" asp-action="Index" class="btn btn-info btn-md display-4" style="border-radius:25px">Seguir comprando</a>
+			<a asp-controller="Pedidos" asp-action="FinalizarCompra" class="btn btn-info btn-md display-4" style="border-radius:25px">Finalizar compra</a>
+		</div>
 		@if (Context.Session.GetString("IDSCUBOS") == null)
 		{
 			<h2 style="color:red">
 				No hay cubos en el carrito
 			</h2>
 		}
-		<br />
 
-		@if (Model != null)
+
+		@if (Model != null && Model.Count > 0)
 		{
 			<table class="table table-bordered">
 				<thead>
@@ -49,7 +54,7 @@
 										   onchange="this.form.submit();" />
 								</form>
 							</td>
-							<td>@c.Precio €</td>
+							<td>@(c.Precio * (ViewData[$"CANTIDAD_{c.IdCubo}"] as int? ?? 1)) €</td>
 							<td>
 								<a asp-controller="Cubos" asp-action="CarritoCompra" asp-route-idEliminar="@c.IdCubo" class="btn btn-form btn-bgr btn-info display-4">
 									Eliminar
@@ -57,8 +62,15 @@
 							</td>
 						</tr>
 					}
+					<tr>
+						<td colspan="6" class="text-right"><strong>Total:</strong></td>
+						<td><strong>@ViewData["PRECIO_TOTAL"] €</strong></td>
+						<td></td>
+					</tr>
 				</tbody>
 			</table>
+
+
 		}
 
 	</div>

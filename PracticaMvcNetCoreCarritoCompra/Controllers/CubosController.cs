@@ -61,47 +61,70 @@ namespace PracticaMvcNetCoreCarritoCompra.Controllers
             List<int> idsCubos = HttpContext.Session.GetObject<List<int>>("IDSCUBOS");
             List<CuboCantidad> cantidades = HttpContext.Session.GetObject<List<CuboCantidad>>("CANTIDADES");
 
-            if (idsCubos == null)
+            if (idsCubos == null || !idsCubos.Any())
             {
                 ViewData["MENSAJE"] = "No existen cubos almacenados en Session.";
+                ViewData["PRECIO_TOTAL"] = 0;
                 return View();
             }
-            else
+
+            if (idEliminar != null)
             {
-                if (idEliminar != null)
+                idsCubos.Remove(idEliminar.Value);
+                if (cantidades != null)
                 {
-                    idsCubos.Remove(idEliminar.Value);
                     cantidades.RemoveAll(x => x.IdCubo == idEliminar.Value);
-                    if (idsCubos.Count == 0)
+                }
+
+                if (idsCubos.Count == 0)
+                {
+                    HttpContext.Session.Remove("IDSCUBOS");
+                    HttpContext.Session.Remove("CANTIDADES");
+                }
+                else
+                {
+                    HttpContext.Session.SetObject("IDSCUBOS", idsCubos);
+                    if (cantidades != null)
                     {
-                        HttpContext.Session.Remove("IDSCUBOS");
-                        HttpContext.Session.Remove("CANTIDADES");
-                    }
-                    else
-                    {
-                        HttpContext.Session.SetObject("IDSCUBOS", idsCubos);
                         HttpContext.Session.SetObject("CANTIDADES", cantidades);
                     }
                 }
-                List<Cubo> cubos = await this.repo.GetCubosSessionAsync(idsCubos);
+            }
+
+            List<Cubo> cubos = await this.repo.GetCubosSessionAsync(idsCubos);
+            int precioTotal = 0;
+
+            if (cubos != null)
+            {
                 foreach (var cubo in cubos)
                 {
-                    CuboCantidad cantidad = cantidades?.Find(x => x.IdCubo == cubo.IdCubo);
-                    if (cantidad != null)
+                    int cantidad = 1; 
+
+                    if (cantidades != null)
                     {
-                        ViewData[$"CANTIDAD_{cubo.IdCubo}"] = cantidad.Cantidad;
-                        cubo.Precio *= cantidad.Cantidad;
+                        CuboCantidad cuboCantidad = cantidades.Find(x => x.IdCubo == cubo.IdCubo);
+                        if (cuboCantidad != null)
+                        {
+                            cantidad = cuboCantidad.Cantidad;
+                        }
                     }
+
+                    ViewData[$"CANTIDAD_{cubo.IdCubo}"] = cantidad;
+                    precioTotal += cubo.Precio * cantidad; 
                 }
-                return View(cubos);
             }
+
+            ViewData["PRECIO_TOTAL"] = precioTotal; 
+
+            return View(cubos);
         }
+
+
 
         public async Task<IActionResult> CambiarCantidad(int idCubo, int cantidad)
         {
             List<CuboCantidad> cantidades;
 
-            // Verificamos si ya existen cantidades almacenadas en la sesión
             if (HttpContext.Session.GetObject<List<CuboCantidad>>("CANTIDADES") == null)
             {
                 cantidades = new List<CuboCantidad>();
@@ -110,19 +133,15 @@ namespace PracticaMvcNetCoreCarritoCompra.Controllers
             {
                 cantidades = HttpContext.Session.GetObject<List<CuboCantidad>>("CANTIDADES");
             }
-
-            // Buscamos si ya existe la cantidad para el cubo
             CuboCantidad cuboCantidad = cantidades.Find(x => x.IdCubo == idCubo);
             if (cuboCantidad != null)
             {
-                cuboCantidad.Cantidad = cantidad; // Si ya existe, actualizamos la cantidad
+                cuboCantidad.Cantidad = cantidad; 
             }
             else
             {
-                cantidades.Add(new CuboCantidad { IdCubo = idCubo, Cantidad = cantidad }); // Si no existe, lo agregamos
+                cantidades.Add(new CuboCantidad { IdCubo = idCubo, Cantidad = cantidad });
             }
-
-            // Guardamos la lista actualizada en la sesión
             HttpContext.Session.SetObject("CANTIDADES", cantidades);
 
             return RedirectToAction("CarritoCompra");

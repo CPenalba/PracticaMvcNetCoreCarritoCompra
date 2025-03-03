@@ -45,11 +45,30 @@
 								}
 							}
 
-							<a asp-controller="Cubos"
-							   asp-action="Index"
-							   asp-route-idCubo="@c.IdCubo"
-							   class="mbr-iconfont mbri-cart-add mobi-mbri item-subtitle mbr-fonts-style mb-0 mt-2 display-4"
-							   style="position: absolute; bottom: 5px; right: 5px; font-size:40px"></a>
+
+							@if (ids == null)
+							{
+								<a asp-controller="Cubos"
+								   asp-action="Index"
+								   asp-route-idCubo="@c.IdCubo"
+								   class="mbr-iconfont mbri-cart-add mobi-mbri item-subtitle mbr-fonts-style mb-0 mt-2 display-4"
+								   style="position: absolute; bottom: 5px; right: 5px; font-size:40px"></a>
+							}
+							else
+							{
+								if (ids.Contains(c.IdCubo))
+								{
+									<img src="https://cdn-icons-png.flaticon.com/128/5952/5952806.png" style="position: absolute; bottom: 5px; right: 5px; width:45px; height:45px;" />
+								}
+								else
+								{
+									<a asp-controller="Cubos"
+									   asp-action="Index"
+									   asp-route-idCubo="@c.IdCubo"
+									   class="mbr-iconfont mbri-cart-add mobi-mbri item-subtitle mbr-fonts-style mb-0 mt-2 display-4"
+									   style="position: absolute; bottom: 5px; right: 5px; font-size:40px"></a>
+								}
+							}
 						</div>
 						<div class="item-content">
 							<h5 class="item-title mbr-fonts-style mt-0 mb-0 mbr-bold display-4">
